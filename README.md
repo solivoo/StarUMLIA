@@ -54,3 +54,12 @@ KimiStarUML/
 
 MVP `0.1.0`: chat + generación de **diagrama de clases**.  
 Pendiente: más tipos de diagrama, edición conversacional, layout automático mejor.
+
+## Tests
+
+```bash
+cd /home/solivo/Documentos/UML/KimiStarUML
+npm test
+```
+
+Cubren parseo JSON, validación (`hola` → chat, create/patch), y el pipeline sin StarUML.

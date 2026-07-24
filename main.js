@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const kimiClient = require("./lib/kimi-client");
 const { buildMessages, extractJson } = require("./lib/prompt");
+const { validateSpec } = require("./lib/spec-utils");
 const { buildFromSpec, snapshotCurrentDiagram } = require("./lib/diagram-builder");
 
 const PREF_VISIBILITY = "view.kimi-chat.visibility";
@@ -97,7 +98,25 @@ async function handleGenerate(userText) {
     history.push({ role: "assistant", content: reply });
 
     const spec = extractJson(reply);
+    const currentExists = !!current;
+    const validation = validateSpec(spec, { hasCurrentDiagram: currentExists });
+
+    if (!validation.ok) {
+      throw new Error(validation.error || "Spec inválido");
+    }
+
+    if (validation.kind === "chat") {
+      appendMessage("system", validation.message);
+      app.toast.info("Kimi");
+      return;
+    }
+
     const result = buildFromSpec(spec);
+
+    if (result.mode === "chat") {
+      appendMessage("system", result.message || validation.message);
+      return;
+    }
 
     if (result.mode === "patch") {
       appendMessage(
