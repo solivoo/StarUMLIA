@@ -230,6 +230,13 @@ describe("interfaces y capas DDD", () => {
     assert.equal(shouldGroupByLayers({ groupByLayers: true, classes: [] }), true);
   });
 
+  it("reconoce nombres de capa y no trata API como clase", () => {
+    const { isLayerPackageName } = require("../lib/diagram-builder");
+    assert.equal(isLayerPackageName("Domain"), true);
+    assert.equal(isLayerPackageName("api"), true);
+    assert.equal(isLayerPackageName("Calculadora"), false);
+  });
+
   it("realization mapea a UMLInterfaceRealization", () => {
     assert.equal(relationId("realization"), "UMLInterfaceRealization");
     assert.equal(relationId("interfaceRealization"), "UMLInterfaceRealization");
@@ -252,6 +259,11 @@ describe("contrato del SYSTEM_PROMPT", () => {
     assert.match(SYSTEM_PROMPT, /Domain/);
     assert.match(SYSTEM_PROMPT, /Infrastructure/);
     assert.match(SYSTEM_PROMPT, /TODA clase/);
+  });
+
+  it("prohíbe relaciones entre paquetes vacíos", () => {
+    assert.match(SYSTEM_PROMPT, /NUNCA crees asociaciones entre capas/);
+    assert.match(SYSTEM_PROMPT, /NUNCA envíes paquetes vacíos/);
   });
 
   it("prohíbe etiquetas verbo en asociaciones", () => {
