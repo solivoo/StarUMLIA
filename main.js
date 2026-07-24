@@ -208,6 +208,17 @@ function promptGenerate() {
 
 function init() {
   setupPanel();
+  // Estilo de línea por defecto: rectilíneo redondeado (LS_ROUNDRECT = 2),
+  // así las nuevas aristas nacen con el mismo estilo que aplica el auto-layout.
+  try {
+    const roundRect =
+      (type.EdgeView && type.EdgeView.LS_ROUNDRECT != null)
+        ? type.EdgeView.LS_ROUNDRECT
+        : 2;
+    app.preferences.set("view.lineStyle", roundRect);
+  } catch (err) {
+    /* preferencia opcional */
+  }
   app.commands.register("kimi:toggle-chat", togglePanel);
   app.commands.register("kimi:prompt-generate", promptGenerate);
 }
