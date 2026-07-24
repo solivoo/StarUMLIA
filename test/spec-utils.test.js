@@ -172,7 +172,13 @@ describe("sanitizeAssocName", () => {
 });
 
 describe("interfaces y capas DDD", () => {
-  const { isInterfaceSpec, inferLayer, relationId } = require("../lib/diagram-builder");
+  const {
+    isInterfaceSpec,
+    inferLayer,
+    normalizeLayerName,
+    relationId,
+    shouldGroupByLayers
+  } = require("../lib/diagram-builder");
 
   it("detecta interface por kind", () => {
     assert.equal(isInterfaceSpec({ name: "IRepo", kind: "interface" }), true);
@@ -192,11 +198,36 @@ describe("interfaces y capas DDD", () => {
 
   it("infiere capas DDD", () => {
     assert.equal(inferLayer({ stereotype: "Entity" }), "Domain");
+    assert.equal(inferLayer({ stereotype: "Factory" }), "Domain");
     assert.equal(inferLayer({ stereotype: "ApplicationService" }), "Application");
     assert.equal(inferLayer({ stereotype: "Repository" }), "Infrastructure");
-    assert.equal(inferLayer({ stereotype: "Adapter" }), "Infrastructure");
+    assert.equal(inferLayer({ stereotype: "Adapter", name: "HistorialRepositoryMemoria" }), "Infrastructure");
+    assert.equal(inferLayer({ stereotype: "Adapter", name: "CalculadoraController" }), "Presentation");
     assert.equal(inferLayer({ kind: "interface", name: "IFoo" }), "Interfaces");
     assert.equal(inferLayer({ layer: "Domain", stereotype: "DTO" }), "Domain");
+  });
+
+  it("normaliza alias de capas (api → Presentation)", () => {
+    assert.equal(normalizeLayerName("api"), "Presentation");
+    assert.equal(normalizeLayerName("infra"), "Infrastructure");
+    assert.equal(normalizeLayerName("Domain"), "Domain");
+  });
+
+  it("shouldGroupByLayers true si hay estereotipos DDD aunque falte layer", () => {
+    assert.equal(
+      shouldGroupByLayers({
+        mode: "patch",
+        addClasses: [
+          { name: "A", stereotype: "Entity" },
+          { name: "B", stereotype: "ApplicationService" }
+        ]
+      }),
+      true
+    );
+  });
+
+  it("shouldGroupByLayers true con groupByLayers", () => {
+    assert.equal(shouldGroupByLayers({ groupByLayers: true, classes: [] }), true);
   });
 
   it("realization mapea a UMLInterfaceRealization", () => {
@@ -218,7 +249,9 @@ describe("contrato del SYSTEM_PROMPT", () => {
 
   it("soporta agrupar por capas DDD", () => {
     assert.match(SYSTEM_PROMPT, /groupByLayers/);
-    assert.match(SYSTEM_PROMPT, /Domain.*Application.*Infrastructure/);
+    assert.match(SYSTEM_PROMPT, /Domain/);
+    assert.match(SYSTEM_PROMPT, /Infrastructure/);
+    assert.match(SYSTEM_PROMPT, /TODA clase/);
   });
 
   it("prohíbe etiquetas verbo en asociaciones", () => {

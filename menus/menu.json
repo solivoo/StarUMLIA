@@ -24,6 +24,11 @@
               "label": "Pulir diagrama (líneas redondeadas + layout)",
               "id": "tools.kimi.polish",
               "command": "kimi:polish-diagram"
+            },
+            {
+              "label": "Reagrupar por capas DDD",
+              "id": "tools.kimi.regroup-layers",
+              "command": "kimi:regroup-layers"
             }
           ]
         }

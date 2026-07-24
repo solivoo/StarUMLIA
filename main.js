@@ -8,7 +8,8 @@ const {
   snapshotCurrentDiagram,
   applyRoundedLines,
   autoLayout,
-  cleanNoiseAssociationNames
+  cleanNoiseAssociationNames,
+  regroupDiagramByLayers
 } = require("./lib/diagram-builder");
 
 const PREF_VISIBILITY = "view.kimi-chat.visibility";
@@ -228,6 +229,19 @@ function polishCurrentDiagram() {
   );
 }
 
+/** Agrupa todas las clases en paquetes Domain / Application / Infrastructure / Presentation / Interfaces */
+function regroupCurrentDiagram() {
+  const diagram = app.diagrams.getCurrentDiagram();
+  if (!diagram) {
+    app.toast.error("No hay diagrama activo");
+    return;
+  }
+  const result = regroupDiagramByLayers(diagram);
+  app.toast.info(
+    "Capas DDD: " + result.moved + " elementos en " + result.packages + " paquetes"
+  );
+}
+
 function init() {
   setupPanel();
   // Estilo de línea por defecto: rectilíneo redondeado (LS_ROUNDRECT = 2),
@@ -244,6 +258,7 @@ function init() {
   app.commands.register("kimi:toggle-chat", togglePanel);
   app.commands.register("kimi:prompt-generate", promptGenerate);
   app.commands.register("kimi:polish-diagram", polishCurrentDiagram);
+  app.commands.register("kimi:regroup-layers", regroupCurrentDiagram);
 }
 
 exports.init = init;
