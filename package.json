@@ -1,0 +1,39 @@
+{
+  "name": "solivo.kimi-diagrams",
+  "title": "Kimi Diagrams",
+  "description": "Chat con Kimi (Moonshot) para generar diagramas UML en StarUML 6.3.1+",
+  "homepage": "https://github.com/solivo/KimiStarUML",
+  "version": "0.1.0",
+  "keywords": [
+    "staruml",
+    "kimi",
+    "moonshot",
+    "ai",
+    "uml",
+    "diagram"
+  ],
+  "author": {
+    "name": "Sergio Olivo",
+    "email": "olivosergio@gmail.com",
+    "url": "https://github.com/solivo"
+  },
+  "license": "MIT",
+  "engines": {
+    "staruml": ">=6.3.1"
+  },
+  "main": "main.js",
+  "files": [
+    "main.js",
+    "lib/",
+    "panel/",
+    "menus/",
+    "preferences/",
+    "stylesheets/",
+    "LICENSE",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/solivo/KimiStarUML.git"
+  }
+}

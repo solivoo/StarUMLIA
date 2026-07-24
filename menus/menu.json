@@ -1,0 +1,25 @@
+{
+  "menu": [
+    {
+      "id": "tools",
+      "submenu": [
+        {
+          "label": "Kimi Diagrams",
+          "id": "tools.kimi",
+          "submenu": [
+            {
+              "label": "Abrir chat",
+              "id": "tools.kimi.open-chat",
+              "command": "kimi:toggle-chat"
+            },
+            {
+              "label": "Generar diagrama desde selección…",
+              "id": "tools.kimi.generate-prompt",
+              "command": "kimi:prompt-generate"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

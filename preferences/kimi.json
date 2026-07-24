@@ -1,0 +1,41 @@
+{
+  "id": "kimi",
+  "name": "Kimi AI",
+  "schema": {
+    "kimi": {
+      "text": "Kimi (Moonshot)",
+      "type": "section"
+    },
+    "kimi.apiKey": {
+      "text": "API Key",
+      "description": "API Key de https://platform.kimi.ai (Bearer).",
+      "type": "string",
+      "default": ""
+    },
+    "kimi.baseUrl": {
+      "text": "Base URL",
+      "description": "Endpoint OpenAI-compatible. Default oficial Moonshot.",
+      "type": "string",
+      "default": "https://api.moonshot.ai/v1"
+    },
+    "kimi.model": {
+      "text": "Modelo",
+      "description": "Nombre del modelo Kimi.",
+      "type": "dropdown",
+      "options": [
+        { "value": "kimi-k2.5", "text": "kimi-k2.5" },
+        { "value": "kimi-k2", "text": "kimi-k2" },
+        { "value": "moonshot-v1-8k", "text": "moonshot-v1-8k" },
+        { "value": "moonshot-v1-32k", "text": "moonshot-v1-32k" },
+        { "value": "moonshot-v1-128k", "text": "moonshot-v1-128k" }
+      ],
+      "default": "kimi-k2.5"
+    },
+    "kimi.temperature": {
+      "text": "Temperature",
+      "description": "Creatividad (0 = más determinista).",
+      "type": "number",
+      "default": 0.2
+    }
+  }
+}
