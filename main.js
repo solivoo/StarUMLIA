@@ -3,7 +3,13 @@ const path = require("path");
 const kimiClient = require("./lib/kimi-client");
 const { buildMessages, extractJson } = require("./lib/prompt");
 const { validateSpec } = require("./lib/spec-utils");
-const { buildFromSpec, snapshotCurrentDiagram } = require("./lib/diagram-builder");
+const {
+  buildFromSpec,
+  snapshotCurrentDiagram,
+  applyRoundedLines,
+  autoLayout,
+  cleanNoiseAssociationNames
+} = require("./lib/diagram-builder");
 
 const PREF_VISIBILITY = "view.kimi-chat.visibility";
 
@@ -206,6 +212,22 @@ function promptGenerate() {
     });
 }
 
+/** Aplica líneas redondeadas + limpia etiquetas + reordena el diagrama actual */
+function polishCurrentDiagram() {
+  const diagram = app.diagrams.getCurrentDiagram();
+  if (!diagram) {
+    app.toast.error("No hay diagrama activo");
+    return;
+  }
+  const cleaned = cleanNoiseAssociationNames(diagram);
+  autoLayout(diagram);
+  const rounded = applyRoundedLines(diagram);
+  app.diagrams.repaint();
+  app.toast.info(
+    "Diagrama pulido: " + rounded + " líneas redondeadas, " + cleaned + " etiquetas limpiadas"
+  );
+}
+
 function init() {
   setupPanel();
   // Estilo de línea por defecto: rectilíneo redondeado (LS_ROUNDRECT = 2),
@@ -221,6 +243,7 @@ function init() {
   }
   app.commands.register("kimi:toggle-chat", togglePanel);
   app.commands.register("kimi:prompt-generate", promptGenerate);
+  app.commands.register("kimi:polish-diagram", polishCurrentDiagram);
 }
 
 exports.init = init;

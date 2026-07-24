@@ -16,6 +16,14 @@
               "label": "Generar diagrama desde selección…",
               "id": "tools.kimi.generate-prompt",
               "command": "kimi:prompt-generate"
+            },
+            {
+              "type": "separator"
+            },
+            {
+              "label": "Pulir diagrama (líneas redondeadas + layout)",
+              "id": "tools.kimi.polish",
+              "command": "kimi:polish-diagram"
             }
           ]
         }

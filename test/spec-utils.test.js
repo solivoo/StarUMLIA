@@ -149,3 +149,24 @@ describe("regresión error hola", () => {
     assert.doesNotMatch(v.message || "", /classes\[\] para create/);
   });
 });
+
+describe("sanitizeAssocName", () => {
+  const { sanitizeAssocName } = require("../lib/diagram-builder");
+
+  it("elimina verbos ruidosos", () => {
+    assert.equal(sanitizeAssocName("+usa"), null);
+    assert.equal(sanitizeAssocName("crea"), null);
+    assert.equal(sanitizeAssocName("produce"), null);
+    assert.equal(sanitizeAssocName("persiste"), null);
+  });
+
+  it("conserva roles significativos", () => {
+    assert.equal(sanitizeAssocName("items"), "items");
+    assert.equal(sanitizeAssocName("+owner"), "owner");
+  });
+
+  it("null/vacío → null", () => {
+    assert.equal(sanitizeAssocName(null), null);
+    assert.equal(sanitizeAssocName(""), null);
+  });
+});

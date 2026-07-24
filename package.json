@@ -3,7 +3,7 @@
   "title": "Kimi Diagrams",
   "description": "Chat con Kimi (Moonshot) para generar diagramas UML en StarUML 6.3.1+",
   "homepage": "https://github.com/solivo/KimiStarUML",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "scripts": {
     "test": "node --test test/**/*.test.js"
   },
