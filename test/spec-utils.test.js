@@ -170,3 +170,58 @@ describe("sanitizeAssocName", () => {
     assert.equal(sanitizeAssocName(""), null);
   });
 });
+
+describe("interfaces y capas DDD", () => {
+  const { isInterfaceSpec, inferLayer, relationId } = require("../lib/diagram-builder");
+
+  it("detecta interface por kind", () => {
+    assert.equal(isInterfaceSpec({ name: "IRepo", kind: "interface" }), true);
+  });
+
+  it("detecta interface por stereotype", () => {
+    assert.equal(isInterfaceSpec({ name: "IRepo", stereotype: "interface" }), true);
+  });
+
+  it("Port + INombre → interface", () => {
+    assert.equal(isInterfaceSpec({ name: "IEventPublisher", stereotype: "Port" }), true);
+  });
+
+  it("clase normal no es interface", () => {
+    assert.equal(isInterfaceSpec({ name: "Historial", stereotype: "AggregateRoot" }), false);
+  });
+
+  it("infiere capas DDD", () => {
+    assert.equal(inferLayer({ stereotype: "Entity" }), "Domain");
+    assert.equal(inferLayer({ stereotype: "ApplicationService" }), "Application");
+    assert.equal(inferLayer({ stereotype: "Repository" }), "Infrastructure");
+    assert.equal(inferLayer({ stereotype: "Adapter" }), "Infrastructure");
+    assert.equal(inferLayer({ kind: "interface", name: "IFoo" }), "Interfaces");
+    assert.equal(inferLayer({ layer: "Domain", stereotype: "DTO" }), "Domain");
+  });
+
+  it("realization mapea a UMLInterfaceRealization", () => {
+    assert.equal(relationId("realization"), "UMLInterfaceRealization");
+    assert.equal(relationId("interfaceRealization"), "UMLInterfaceRealization");
+  });
+});
+
+describe("contrato del SYSTEM_PROMPT", () => {
+  const { SYSTEM_PROMPT } = require("../lib/prompt");
+
+  it("instruye kind:interface para interfaces reales", () => {
+    assert.match(SYSTEM_PROMPT, /kind:"interface"/);
+  });
+
+  it("instruye dirección correcta de realization (from=implementador, to=interfaz)", () => {
+    assert.match(SYSTEM_PROMPT, /realization: SIEMPRE from=/);
+  });
+
+  it("soporta agrupar por capas DDD", () => {
+    assert.match(SYSTEM_PROMPT, /groupByLayers/);
+    assert.match(SYSTEM_PROMPT, /Domain.*Application.*Infrastructure/);
+  });
+
+  it("prohíbe etiquetas verbo en asociaciones", () => {
+    assert.match(SYSTEM_PROMPT, /NUNCA uses verbos/);
+  });
+});
