@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const kimiClient = require("./lib/kimi-client");
 const { buildMessages, extractJson } = require("./lib/prompt");
-const { buildFromSpec } = require("./lib/diagram-builder");
+const { buildFromSpec, snapshotCurrentDiagram } = require("./lib/diagram-builder");
 
 const PREF_VISIBILITY = "view.kimi-chat.visibility";
 
@@ -68,7 +68,10 @@ function clearChat() {
   if ($messages) {
     $messages.empty();
   }
-  appendMessage("system", "Chat limpio. Describe el dominio y pulsa Generar.");
+  appendMessage(
+    "system",
+    "Chat limpio. Primer mensaje = diagrama nuevo. Siguientes = solo cambios sobre el diagrama activo."
+  );
 }
 
 async function handleGenerate(userText) {
@@ -87,21 +90,47 @@ async function handleGenerate(userText) {
   appendMessage("system", "Consultando Kimi…");
 
   try {
-    const reply = await kimiClient.chat(buildMessages(text, history.slice(0, -1)));
+    const current = snapshotCurrentDiagram();
+    const reply = await kimiClient.chat(
+      buildMessages(text, history.slice(0, -1), current)
+    );
     history.push({ role: "assistant", content: reply });
-    appendMessage("assistant", reply.slice(0, 1200) + (reply.length > 1200 ? "…" : ""));
 
     const spec = extractJson(reply);
     const result = buildFromSpec(spec);
-    appendMessage(
-      "system",
-      "✓ Diagrama creado: " +
-        result.classCount +
-        " clases, " +
-        result.assocCount +
-        " relaciones."
-    );
-    app.toast.info("Diagrama generado con Kimi");
+
+    if (result.mode === "patch") {
+      appendMessage(
+        "system",
+        "✓ Actualizado «" +
+          (result.diagram.name || "diagrama") +
+          "»: +" +
+          result.added +
+          " clases, ~" +
+          result.updated +
+          " modificadas, -" +
+          result.removed +
+          " eliminadas, +" +
+          result.assocCount +
+          " relaciones."
+      );
+      app.toast.info("Diagrama actualizado (parche)");
+    } else {
+      const names = (spec.classes || []).map((c) => c.name).filter(Boolean);
+      appendMessage(
+        "system",
+        "✓ Diagrama nuevo «" +
+          (spec.diagramName || result.diagram.name || "Kimi") +
+          "»: " +
+          result.added +
+          " clases, " +
+          result.assocCount +
+          " relaciones" +
+          (names.length ? " → " + names.slice(0, 8).join(", ") : "") +
+          "."
+      );
+      app.toast.info("Diagrama generado con Kimi");
+    }
   } catch (err) {
     console.error("[Kimi]", err);
     appendMessage("error", String(err && err.message ? err.message : err));
