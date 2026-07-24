@@ -15,8 +15,8 @@ Reinicia StarUML.
 
 1. **Preferences → Kimi AI**
 2. Pega tu **API Key** de https://platform.kimi.ai
-3. Base URL por defecto: `https://api.moonshot.ai/v1`
-4. Elige modelo (ej. `kimi-k2.5`)
+3. Base URL: `https://api.moonshot.ai/v1` ([docs](https://platform.kimi.ai/docs/overview))
+4. Modelo por defecto: **`kimi-k3`**
 
 ## Uso
 

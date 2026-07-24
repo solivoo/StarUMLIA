@@ -20,16 +20,27 @@
     },
     "kimi.model": {
       "text": "Modelo",
-      "description": "Nombre del modelo Kimi.",
+      "description": "Modelo Kimi (oficial: kimi-k3). Ver https://platform.kimi.ai/docs/overview",
       "type": "dropdown",
       "options": [
+        { "value": "kimi-k3", "text": "kimi-k3 (recomendado)" },
+        { "value": "kimi-k2.6", "text": "kimi-k2.6" },
+        { "value": "kimi-k2.7-code-highspeed", "text": "kimi-k2.7-code-highspeed" },
         { "value": "kimi-k2.5", "text": "kimi-k2.5" },
-        { "value": "kimi-k2", "text": "kimi-k2" },
-        { "value": "moonshot-v1-8k", "text": "moonshot-v1-8k" },
-        { "value": "moonshot-v1-32k", "text": "moonshot-v1-32k" },
         { "value": "moonshot-v1-128k", "text": "moonshot-v1-128k" }
       ],
-      "default": "kimi-k2.5"
+      "default": "kimi-k3"
+    },
+    "kimi.reasoningEffort": {
+      "text": "Reasoning effort (K3)",
+      "description": "Solo Kimi K3: low / high / max. Ver docs oficiales.",
+      "type": "dropdown",
+      "options": [
+        { "value": "low", "text": "low" },
+        { "value": "high", "text": "high" },
+        { "value": "max", "text": "max" }
+      ],
+      "default": "low"
     },
     "kimi.temperature": {
       "text": "Temperature",
